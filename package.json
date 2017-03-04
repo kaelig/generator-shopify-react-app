@@ -1,0 +1,37 @@
+{
+  "name": "shopify-react-starter",
+  "version": "0.1.0",
+  "description": "Shopify React Starter Kit",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack ./webpack.config.js --env.dev",
+    "build:prod": "webpack --end.prod -p",
+    "clean": "rm -rf dist/*",
+    "prestart": "npm run clean",
+    "start": "webpack-dev-server ./webpack.config.js --env.dev --content-base ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buggy/shopify-react-starter.git"
+  },
+  "author": "Rich Buggy <rich@buggy.id.au>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/buggy/shopify-react-starter/issues"
+  },
+  "homepage": "https://github.com/buggy/shopify-react-starter#readme",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "@types/react": "^15.0.14",
+    "@types/react-dom": "^0.14.23",
+    "awesome-typescript-loader": "^3.0.8",
+    "source-map-loader": "^0.1.6",
+    "typescript": "^2.2.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  }
+}

@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = (env) => {
     return {
-        entry: "./src/index.tsx",
+        entry: ["whatwg-fetch", "./src/index.tsx"],
 
         output: {
             filename: "bundle.js",

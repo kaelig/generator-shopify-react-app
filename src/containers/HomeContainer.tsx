@@ -15,7 +15,7 @@ export class HomeContainer extends React.Component<HomeContainerProps, undefined
     render(): JSX.Element {
         if (config.enableEmbedded) {
             ShopifyApp.init({
-                apiKey: '6f549e09abad51716775be047ce72ef6',
+                apiKey: config.shopifyApiKey,
                 shopOrigin: 'https://growing-ecommerce.myshopify.com'
             });
             ShopifyApp.ready(function () {

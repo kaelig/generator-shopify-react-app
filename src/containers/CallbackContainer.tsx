@@ -25,7 +25,7 @@ export class CallbackContainer extends React.Component<CallbackContainerProps, C
         this.state = {
             errorMessage: null,
             shop: this.props["location"]["query"]["shop"]
-        }
+        };
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -40,12 +40,13 @@ export class CallbackContainer extends React.Component<CallbackContainerProps, C
     doCallback(querystring: { [name: string]: string }, token: string | null): void {
         const params = Object.assign({}, querystring, { token: token });
         const url = `${config.baseApiUrl}/auth/shopify`;
-        fetch(url, { method: 'POST', mode: 'cors', headers: { "Content-Type": "application/json" }, body: JSON.stringify(params) })
+        fetch(url, { method: "POST", mode: "cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(params) })
             .then(resp => {
                 if (resp.ok) {
                     resp.json()
                         .then(json => {
                             sessionStorage.setItem("token", json["token"]);
+                            sessionStorage.removeItem("auth_id");
                             if (this.props.router) {
                                 this.props.router.push("/");
                             }
@@ -56,7 +57,7 @@ export class CallbackContainer extends React.Component<CallbackContainerProps, C
                 }
             })
             .catch(err => {
-                console.error("Unexpected error calling fetch()", err)
+                console.error("Unexpected error calling fetch()", err);
                 this.setState({ errorMessage: "OAuth Callback Failed" });
             });
     }

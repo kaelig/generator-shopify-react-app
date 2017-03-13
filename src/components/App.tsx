@@ -9,7 +9,8 @@ import { LogoutContainer } from "../containers/LogoutContainer";
 export class App extends React.Component<{}, {}> {
     checkAuth(_nextState: RouterState, replace: RedirectFunction) {
         const token = sessionStorage.getItem("token");
-        if (token === null) {
+        const shop = sessionStorage.getItem("shop");
+        if (!token || !shop) {
             replace("/login");
         }
     }

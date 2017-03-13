@@ -9,12 +9,12 @@ class LoginContainerProps {
         query: {
             shop: string;
         }
-    }
+    };
     router?: {
         params: {
             [name: string]: string;
         }
-    }
+    };
 }
 
 class LoginContainerState {
@@ -28,7 +28,7 @@ export class LoginContainer extends React.Component<LoginContainerProps, LoginCo
         this.state = {
             errorMessage: null,
             shop: this.props["location"]["query"]["shop"] || ""
-        }
+        };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -48,23 +48,24 @@ export class LoginContainer extends React.Component<LoginContainerProps, LoginCo
     }
 
     doLogin(shop: string): void {
+        sessionStorage.setItem("shop", shop);
         const callbackUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
         const url = `${config.baseApiUrl}/auth/shopify?shop=${encodeURI(shop)}&callbackUrl=${encodeURI(callbackUrl)}`;
-        fetch(url, { method: 'GET', mode: 'cors' })
+        fetch(url, { method: "GET", mode: "cors" })
             .then(resp => {
                 if (resp.ok) {
                     resp.json()
                         .then(json => {
                             sessionStorage.setItem("auth_id", json["token"]);
                             // If the current window is the 'parent', change the URL by setting location.href
-                            if (window.top == window.self) {
-                                window.top.location.href = json["authUrl"];
+                            if (window.top === window.self) {
+                                window.location.href = json["authUrl"];
 
                                 // If the current window is the 'child', change the parent's URL with postMessage
                             } else {
                                 let message = JSON.stringify({
                                     message: "Shopify.API.remoteRedirect",
-                                    data: { location: json['authUrl'] }
+                                    data: { location: window.location.origin + "?shop=" + shop }
                                 });
                                 window.parent.postMessage(message, `https://${shop}`);
                             }
@@ -75,7 +76,7 @@ export class LoginContainer extends React.Component<LoginContainerProps, LoginCo
                 }
             })
             .catch(err => {
-                console.error("Unexpected error calling fetch()", err)
+                console.error("Unexpected error calling fetch()", err);
                 this.setState({ errorMessage: "OAuth Callback Failed" });
             });
     }
@@ -101,6 +102,9 @@ export class LoginContainer extends React.Component<LoginContainerProps, LoginCo
     }
 
     render(): JSX.Element {
+        if (window.top !== window.self) {
+            window.top.location.href = window.self.location.href;
+        }
         return (<Login shop={this.state.shop} handleSubmit={this.handleSubmit} handleStoreChanged={this.handleChange} errorMessage={this.state.errorMessage} />);
     }
 }

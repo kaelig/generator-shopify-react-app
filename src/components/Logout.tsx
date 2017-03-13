@@ -7,7 +7,7 @@ export function Logout() {
             <article>
                 <h1>Logged Out</h1>
                 <h3>You are now logged out.</h3>
-                <Link to="/" className="btn btn-primary">Login Again</Link>
+                <Link to="/" className="button">Login Again</Link>
             </article>
         </section>
     );

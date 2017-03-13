@@ -12,12 +12,18 @@ export class LogoutContainer extends React.Component<LogoutContainerProps, undef
         super(props);
     }
 
+    logout() {
+        sessionStorage.removeItem("auth_id");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("shop");
+    }
+
+    componentWillReceiveProps(_props: LogoutContainerProps) {
+        this.logout();
+    }
+
     componentDidMount(): void {
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("token");
-        if (this.props.router) {
-            this.props.router.push("/");
-        }
+        this.logout();
     }
 
     render(): JSX.Element {

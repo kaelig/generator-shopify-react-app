@@ -3,10 +3,11 @@ This starter kit is designed to get you up and running quickly when building a n
 
 # Requirements
 
-* TypeScript
-* TSLint
-* React
-* React-Router
+All if the requirements are in your `package.json` file. You can install them using:
+
+```sh
+npm install
+```
 
 # Installing
 Download a copy of [Shopify React Starter Kit](https://github.com/buggy/shopify-react-starter/archive/master.zip) and unzip it into your project folder. You then need to create a config file `src/config.ts` with your settings.
@@ -25,6 +26,13 @@ export const config = {
     // Set to true to enable an embedded app or false to disable it
     enableEmbedded: true
 }
+```
+
+# Development Server
+This project uses the webpack-dev-server. You can start it by running the following command from the projects root folder
+
+```sh
+npm start
 ```
 
 # Copyright

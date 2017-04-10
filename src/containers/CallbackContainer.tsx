@@ -1,40 +1,35 @@
 import * as React from "react";
-import { InjectedRouter } from "react-router";
+import { Redirect, RouteComponentProps } from "react-router-dom";
 import "whatwg-fetch";
 
 import { config } from "../config";
+import { parseQueryString } from "../lib/query-string";
 import { Callback } from "../components/Callback";
 
-class CallbackContainerProps {
-    location: {
-        query: {
-            [name: string]: string;
-        };
-    };
-    router?: InjectedRouter;
-}
-
 class CallbackContainerState {
+    callbackSuccess: boolean;
     errorMessage: string | null;
     shop: string | null;
 }
 
-export class CallbackContainer extends React.Component<CallbackContainerProps, CallbackContainerState> {
-    constructor(props: CallbackContainerProps) {
+export class CallbackContainer extends React.Component<RouteComponentProps<undefined>, CallbackContainerState> {
+    constructor(props: RouteComponentProps<undefined>) {
         super(props);
+        const shop = new URLSearchParams(this.props.location.search).get("shop");
         this.state = {
+            callbackSuccess: false,
             errorMessage: null,
-            shop: this.props["location"]["query"]["shop"]
+            shop: shop
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount(): void {
-        this.doCallback(this.props.location.query, sessionStorage.getItem("auth_id"));
+        this.doCallback(parseQueryString(this.props.location.search), sessionStorage.getItem("token"));
     }
 
-    componentWillReceiveProps(nextProps: CallbackContainerProps): void {
-        this.doCallback(nextProps.location.query, sessionStorage.getItem("auth_id"));
+    componentWillReceiveProps(nextProps: RouteComponentProps<undefined>): void {
+        this.doCallback(parseQueryString(nextProps.location.search), sessionStorage.getItem("token"));
     }
 
     doCallback(querystring: { [name: string]: string }, token: string | null): void {
@@ -46,10 +41,9 @@ export class CallbackContainer extends React.Component<CallbackContainerProps, C
                     resp.json()
                         .then(json => {
                             sessionStorage.setItem("token", json["token"]);
-                            sessionStorage.removeItem("auth_id");
-                            if (this.props.router) {
-                                this.props.router.push("/");
-                            }
+                            this.setState({
+                                callbackSuccess: true
+                            })
                         })
                         .catch(err => console.error("Unexpected error calling resp.json()", err));
                 } else {
@@ -68,6 +62,10 @@ export class CallbackContainer extends React.Component<CallbackContainerProps, C
     }
 
     render(): JSX.Element {
+        if (this.state.callbackSuccess) {
+            return <Redirect to="/" />;
+        }
+
         return (<Callback errorMessage={this.state.errorMessage} />);
     }
 }

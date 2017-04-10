@@ -1,52 +1,51 @@
 import * as React from "react";
+import { RouteComponentProps } from "react-router";
 import "whatwg-fetch";
 
 import { config } from "../config";
+import { parseQueryString } from "../lib/query-string";
 import { Login } from "../components/Login";
-
-class LoginContainerProps {
-    location: {
-        query: {
-            shop: string;
-        }
-    };
-    router?: {
-        params: {
-            [name: string]: string;
-        }
-    };
-}
 
 class LoginContainerState {
     errorMessage: string | null;
     shop: string;
 }
 
-export class LoginContainer extends React.Component<LoginContainerProps, LoginContainerState> {
-    constructor(props: LoginContainerProps) {
+export class LoginContainer extends React.Component<RouteComponentProps<undefined>, LoginContainerState> {
+    constructor(props: RouteComponentProps<undefined>) {
         super(props);
         this.state = {
             errorMessage: null,
-            shop: this.props["location"]["query"]["shop"] || ""
+            shop: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount(): void {
-        if (this.props.location.query["shop"] !== undefined) {
-            this.setState({ shop: this.props.location.query["shop"] });
-            this.doLogin(this.props.location.query["shop"]);
+        this.componentWillReceiveProps(this.props);
+    }
+
+    componentWillReceiveProps(nextProps: RouteComponentProps<undefined>): void {
+        // Get the shop parameter from the query string
+        const params = parseQueryString(nextProps.location.search);
+        const shop = params["shop"];
+        if (shop !== undefined) {
+            // Validate the shop domain and set the state
+            const errorMessage = this.shopErrorMessage(shop)
+            this.setState({
+                errorMessage: errorMessage,
+                shop: shop
+            });
+
+            // Iff there was no error message the attempt to login
+            if (errorMessage === null) {
+                this.doLogin(shop);
+            }
         }
     }
 
-    componentWillReceiveProps(nextProps: LoginContainerProps): void {
-        if (nextProps.location.query["shop"] !== undefined) {
-            this.setState({ shop: this.props.location.query["shop"] });
-            this.doLogin(nextProps.location.query["shop"]);
-        }
-    }
-
+    // Obtain the OAuth URL and redirect the user to it.
     doLogin(shop: string): void {
         sessionStorage.setItem("shop", shop);
         const callbackUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
@@ -56,7 +55,7 @@ export class LoginContainer extends React.Component<LoginContainerProps, LoginCo
                 if (resp.ok) {
                     resp.json()
                         .then(json => {
-                            sessionStorage.setItem("auth_id", json["token"]);
+                            sessionStorage.setItem("token", json["token"]);
                             // If the current window is the 'parent', change the URL by setting location.href
                             if (window.top === window.self) {
                                 window.location.href = json["authUrl"];
@@ -81,26 +80,33 @@ export class LoginContainer extends React.Component<LoginContainerProps, LoginCo
             });
     }
 
+    // Update our state as the shop component changed
     handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
         event.preventDefault();
         this.setState({ [event.target.name as keyof LoginContainerState]: event.target.value } as any);
     }
 
-    handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
-        event.preventDefault();
-        if (this.state.shop.match(/^[a-z][a-z0-9\-]*\.myshopify\.com$/i) == null) {
-            this.setState({
-                errorMessage: "Shop URL must end with .myshopify.com"
-            });
-            return;
-        } else {
-            this.setState({
-                errorMessage: null
-            });
+    // Returns the error message if the shop domain is invalid, otherwise null
+    shopErrorMessage(shop: string): string | null {
+        if (shop.match(/^[a-z][a-z0-9\-]*\.myshopify\.com$/i) == null) {
+            return "Shop URL must end with .myshopify.com";
         }
-        this.doLogin(this.state.shop);
+        return null;
     }
 
+    // Validate the shop domain and attempt the OAuth process it there is no error
+    handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
+        event.preventDefault();
+        const errorMessage = this.shopErrorMessage(this.state.shop);
+        this.setState({
+            errorMessage: errorMessage
+        });
+        if (errorMessage === null) {
+            this.doLogin(this.state.shop);
+        }
+    }
+
+    // Render the login component
     render(): JSX.Element {
         if (window.top !== window.self) {
             window.top.location.href = window.self.location.href;

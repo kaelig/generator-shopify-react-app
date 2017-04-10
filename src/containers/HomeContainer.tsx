@@ -1,15 +1,11 @@
 import * as React from "react";
-import { InjectedRouter } from "react-router";
+import { RouteComponentProps } from "react-router-dom";
 
 import { config } from "../config";
 
-class HomeContainerProps {
-    router?: InjectedRouter;
-}
-
-export class HomeContainer extends React.Component<HomeContainerProps, undefined> {
-    constructor() {
-        super();
+export class HomeContainer extends React.Component<RouteComponentProps<undefined>, undefined> {
+    constructor(props: RouteComponentProps<undefined>) {
+        super(props);
         this.handleSave = this.handleSave.bind(this);
     }
 

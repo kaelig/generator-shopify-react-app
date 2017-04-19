@@ -16,7 +16,9 @@ export class App extends React.Component<{}, {}> {
                     <Route path="/logout" component={LogoutContainer} />
                     <Route path="/auth/shopify/callback" component={CallbackContainer} />
                     <CheckAuthContainer>
-                        <Route path="/" component={HomeContainer} />
+                        <Switch>
+                            <Route path="/" component={HomeContainer} />
+                        </Switch>
                     </CheckAuthContainer>
                 </Switch>
             </Router>

@@ -50,6 +50,7 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
         sessionStorage.setItem("shop", shop);
         const callbackUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
         const url = `${config.baseApiUrl}/auth/shopify?shop=${encodeURI(shop)}&callbackUrl=${encodeURI(callbackUrl)}`;
+        console.log(url);
         fetch(url, { method: "GET", mode: "cors" })
             .then(resp => {
                 if (resp.ok) {
@@ -71,12 +72,12 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
                         })
                         .catch(err => console.error("Unexpected error calling resp.json()", err));
                 } else {
-                    this.setState({ errorMessage: "OAuth Callback Failed" });
+                    this.setState({ errorMessage: "OAuth Begin Failed" });
                 }
             })
             .catch(err => {
                 console.error("Unexpected error calling fetch()", err);
-                this.setState({ errorMessage: "OAuth Callback Failed" });
+                this.setState({ errorMessage: "OAuth Begin Failed" });
             });
     }
 

@@ -43,7 +43,7 @@ export class CallbackContainer extends React.Component<RouteComponentProps<undef
                             sessionStorage.setItem("token", json["token"]);
                             this.setState({
                                 callbackSuccess: true
-                            })
+                            });
                         })
                         .catch(err => console.error("Unexpected error calling resp.json()", err));
                 } else {

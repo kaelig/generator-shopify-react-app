@@ -32,7 +32,7 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
         const shop = params["shop"];
         if (shop !== undefined) {
             // Validate the shop domain and set the state
-            const errorMessage = this.shopErrorMessage(shop)
+            const errorMessage = this.shopErrorMessage(shop);
             this.setState({
                 errorMessage: errorMessage,
                 shop: shop

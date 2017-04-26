@@ -7,4 +7,4 @@ export const config = {
 
     // Set to true to enable an embedded app or false to disable it
     enableEmbedded: true
-}
+};

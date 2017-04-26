@@ -1,80 +1,74 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { Card, DisplayText, FooterHelp, Page, Subheading } from "@shopify/polaris";
+import { EmbeddedApp, Alert } from "@shopify/polaris/embedded";
 
 import { config } from "../config";
 
-export class HomeContainer extends React.Component<RouteComponentProps<undefined>, undefined> {
-    constructor(props: RouteComponentProps<undefined>) {
-        super(props);
-        this.handleSave = this.handleSave.bind(this);
-    }
+declare namespace ShopifyApp {
+  function init(params: any): any;
+}
 
-    handleSave(): void {
-        ShopifyApp.Modal.alert("You clicked the 'Save' button", () => { });
-    }
+class HomeContainerState {
+  showModal: boolean;
+}
 
-    render(): JSX.Element {
-        const handleSave = this.handleSave;
-        const shop = sessionStorage.getItem("shop");
-        if (config.enableEmbedded && config.shopifyApiKey && shop) {
-            ShopifyApp.init({
-                apiKey: config.shopifyApiKey,
-                shopOrigin: `https://${shop}`
-            });
-            ShopifyApp.ready(function () {
-                ShopifyApp.Bar.initialize({
-                    icon: "http://localhost:3001/assets/header-icon.png",
-                    title: "Shopify React Starter Kit",
-                    buttons: {
-                        primary: {
-                            label: "Save",
-                            message: "save",
-                            callback: handleSave,
-                        },
-                        secondary: [
-                            {
-                                label: "Dashboard",
-                                message: "dashboard",
-                                href: "/",
-                            }
-                        ]
-                    }
-                });
-            });
-        }
+export class HomeContainer extends React.Component<RouteComponentProps<undefined>, HomeContainerState> {
+  constructor(props: RouteComponentProps<undefined>) {
+    super(props);
+    this.state = {
+      showModal: false
+    };
+    this.handleSave = this.handleSave.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+  }
 
-        return (<main>
-            <header>
-                <h1>Shopify React Starter Kit</h1>
-                <h2>Building Shopify Apps powered by React</h2>
-            </header>
-            <section>
-                <div className="column">
-                    <article>
-                        <div className="card columns twelve align-center" style={{ borderTop: "3px solid rgb(122, 181, 92)" }}>
-                            <h2 style={{ color: "rgb(122, 181, 92)" }}>The fast way to build Shopify apps with React</h2>
-                            <p>This starter kit makes it easy to get started building embedded Shopify apps using React.</p>
-                        </div>
-                    </article>
-                    <article>
-                        <div className="card columns twelve">
-                            <h3>The Tech Stack</h3>
-                            <ul>
-                                <li><a href="https://facebook.github.io/react/">React</a></li>
-                                <li><a href="http://www.uptowncss.com/">TypeScript</a></li>
-                                <li><a href="https://palantir.github.io/tslint/">TSLint</a></li>
-                                <li><a href="http://www.uptowncss.com/">Uptown CSS</a></li>
-                            </ul>
-                            <p>For more information please see the <a href="https://github.com/buggy/shopify-react-starter">README</a>.</p>
-                        </div>
-                    </article>
-                </div>
-            </section>
-            <footer></footer>
-            <div classID="copyright">
-                <p>Shopify Serverless Starter Kit &mdash; &copy; 2017 <a href="http://www.growingecommerce.com/">Growing eCommerce Pty Ltd</a></p>
-                <p>Uptown CSS &mdash; &copy; 20176 <a href="http://www.theshoppad.com/">ShopPad, Inc</a></p>
-            </div>
-        </main>);
-    }
+  hideModal(): void {
+    this.setState({
+      showModal: false
+    });
+  }
+
+  handleSave(): void {
+    this.setState({
+      showModal: true
+    });
+  }
+
+  render(): JSX.Element {
+    const shop = sessionStorage.getItem("shop");
+
+    ShopifyApp.init({
+      apiKey: config.shopifyApiKey,
+      shopOrigin: `https://${shop}`
+    });
+
+    return (
+      <EmbeddedApp apiKey={config.shopifyApiKey} shopOrigin={`https://${shop}`}>
+        <Page title="Example application" primaryAction={{ content: "Save", onAction: this.handleSave }} secondaryActions={[{ content: "Dashboard", url: "/" }]}>
+
+          <Card sectioned>
+            <DisplayText size="small">This starter kit makes it easy to get started building embedded Shopify apps using React.</DisplayText>
+          </Card>
+
+          <Card sectioned>
+            <Subheading>The Tech Stack</Subheading>
+            <ul>
+              <li><a href="https://facebook.github.io/react/" target="_blank">React</a></li>
+              <li><a href="http://www.uptowncss.com/" target="_blank">TypeScript</a></li>
+              <li><a href="https://palantir.github.io/tslint/" target="_blank">TSLint</a></li>
+              <li><a href="https://polaris.shopify.com/" target="_blank">Polaris</a></li>
+            </ul>
+            <p>For more information please see the <a href="https://github.com/buggy/shopify-react-starter">README</a>.</p>
+          </Card>
+
+          <Alert open={this.state.showModal} onConfirm={this.hideModal} confirmContent="Ok" >Saved!!</Alert>
+
+          <FooterHelp>
+            Shopify Serverless Starter Kit &mdash; &copy; 2017 <a href="http://www.growingecommerce.com/" target="_blank">Growing eCommerce Pty Ltd</a>.
+          </FooterHelp>
+        </Page>
+      </EmbeddedApp>
+    );
+  }
 }

@@ -8,8 +8,9 @@ import { HomeContainer } from "../containers/HomeContainer";
 import { LoginContainer } from "../containers/LoginContainer";
 import { LogoutContainer } from "../containers/LogoutContainer";
 
+// This is the routing for our app. /login, /logout and /auth/shopify/callback should all be unauthenticated. The
+// rest of the app should check that the user is authenticated and initialize the embedded app code if enabled
 export class App extends React.Component<{}, {}> {
-
     render(): JSX.Element {
         return (
             <Router>

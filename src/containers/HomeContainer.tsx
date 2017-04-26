@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { Card, DisplayText, FooterHelp, Page, Subheading } from "@shopify/polaris";
 import { Alert } from "@shopify/polaris/embedded";
 
-class HomeContainerState {
+interface HomeContainerState {
     showModal: boolean;
 }
 
@@ -18,27 +18,32 @@ export class HomeContainer extends React.Component<RouteComponentProps<undefined
         this.hideModal = this.hideModal.bind(this);
     }
 
+    // Called when the Alert is confirmed. By changing showModal to false here when render() is called it outputs
+    // the Alert with open = false
     hideModal(): void {
         this.setState({
             showModal: false
         });
     }
 
+    // Called when the save button is clicked. By changing showModal to true here when render() is called it outputs
+    // the Alert with open = true
     handleSave(): void {
         this.setState({
             showModal: true
         });
     }
 
+    // Renders a demo homepage. The only import thing here is using Helmet to replace the stylesheet with the
+    // stylesheet for Polaris.
     render(): JSX.Element {
-
         return (
             <div className="application">
                 <Helmet>
-                    <link rel="stylesheet" href="https://sdks.shopifycdn.com/polaris/1.0.0/polaris.min.css" />
                     <title>Shopify App &mdash; Home</title>
+                    <link rel="stylesheet" href="https://sdks.shopifycdn.com/polaris/1.0.0/polaris.min.css" />
                 </Helmet>
-                <Page title="Example application" primaryAction={{ content: "Save", onAction: this.handleSave }} secondaryActions={[{ content: "Dashboard", url: "/" }]}>
+                <Page title="Example application" primaryAction={{ content: "Save", onAction: this.handleSave }}>
 
                     <Card sectioned>
                         <DisplayText size="small">This starter kit makes it easy to get started building embedded Shopify apps using React.</DisplayText>

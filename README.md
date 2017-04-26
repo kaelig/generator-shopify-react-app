@@ -37,5 +37,3 @@ npm start
 
 # Copyright
 This project (except for Uptown CSS) is copyright 2017 Rich Buggy & [Growing eCommerce Pty Ltd](http://www.growingecommerce.com). See the LICENCE file for information about using and distributing this project.
-
-[Uptown CSS](http://www.uptowncss.com/) is copyright 2016 [ShopPad, Inc](http://www.shoppad.com/).

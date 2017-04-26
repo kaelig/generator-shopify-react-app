@@ -117,7 +117,7 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
             <div className="application">
                 <Helmet>
                     <link rel="stylesheet" href="/static/css/login.css" />
-                    <title>Shopify App &mdash Installation</title>
+                    <title>Shopify App &mdash; Installation</title>
                 </Helmet>
                 <Login shop={this.state.shop} handleSubmit={this.handleSubmit} handleStoreChanged={this.handleChange} errorMessage={this.state.errorMessage} />
             </div>

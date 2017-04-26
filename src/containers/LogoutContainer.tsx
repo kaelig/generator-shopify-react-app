@@ -1,7 +1,6 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-
-import { Logout } from "../components/Logout";
+import { Redirect, RouteComponentProps } from "react-router";
+import { Helmet } from "react-helmet";
 
 export class LogoutContainer extends React.Component<RouteComponentProps<undefined>, undefined> {
     constructor(props: RouteComponentProps<undefined>) {
@@ -22,6 +21,14 @@ export class LogoutContainer extends React.Component<RouteComponentProps<undefin
     }
 
     render(): JSX.Element {
-        return (<Logout />);
+        return (
+            <div className="application">
+                <Helmet>
+                    <link rel="stylesheet" href="/static/css/login.css" />
+                    <title>Shopify App &mdash; Logout</title>
+                </Helmet>
+                <Redirect to="/login" />
+            </div>
+        );
     }
 }

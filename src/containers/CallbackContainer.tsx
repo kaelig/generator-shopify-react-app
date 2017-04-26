@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import "whatwg-fetch";
 
 import { config } from "../config";
@@ -66,6 +67,14 @@ export class CallbackContainer extends React.Component<RouteComponentProps<undef
             return <Redirect to="/" />;
         }
 
-        return (<Callback errorMessage={this.state.errorMessage} />);
+        return (
+            <div className="application">
+                <Helmet>
+                    <link rel="stylesheet" href="/static/css/login.css" />
+                    <title>Shopify App &mdash; Callback</title>
+                </Helmet>
+                <Callback errorMessage={this.state.errorMessage} />
+            </div>
+        );
     }
 }

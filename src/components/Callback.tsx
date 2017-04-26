@@ -7,11 +7,17 @@ class CallbackProps {
 export function Callback(props: CallbackProps) {
     const error = props.errorMessage ? <div className="alert error"><dl><dt>Error Alert</dt><dd>{props.errorMessage}</dd></dl></div> : null;
     return (
-        <section className="zero-state full-width">
-            <article>
+        <main className="container" role="main">
+            <header>
                 <h1>Shopify App — Installation</h1>
-                {error}
-            </article>
-        </section>
+                <p className="subhead">
+                    <label htmlFor="shop">Redirecting, please wait...</label>
+                </p>
+            </header>
+
+            <div className="container__form">
+                ERROR: {error}
+            </div>
+        </main>
     );
 }

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Helmet } from "react-helmet";
 import "whatwg-fetch";
 
 import { config } from "../config";
@@ -112,6 +113,14 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
         if (window.top !== window.self) {
             window.top.location.href = window.self.location.href;
         }
-        return (<Login shop={this.state.shop} handleSubmit={this.handleSubmit} handleStoreChanged={this.handleChange} errorMessage={this.state.errorMessage} />);
+        return (
+            <div className="application">
+                <Helmet>
+                    <link rel="stylesheet" href="/static/css/login.css" />
+                    <title>Shopify App &mdash Installation</title>
+                </Helmet>
+                <Login shop={this.state.shop} handleSubmit={this.handleSubmit} handleStoreChanged={this.handleChange} errorMessage={this.state.errorMessage} />
+            </div>
+        );
     }
 }

@@ -10,18 +10,21 @@ class LoginProps {
 export function Login(props: LoginProps) {
     const error = props.errorMessage ? <div className="alert error"><dl><dt>Error Alert</dt><dd>{props.errorMessage}</dd></dl></div> : null;
     return (
-        <section className="zero-state full-width">
-            <article>
+        <main className="container" role="main">
+            <header>
                 <h1>Shopify App — Installation</h1>
-                <h3>Please enter the “myshopify” domain of your store</h3>
-                <form method="get" style={{ maxWidth: "500px", margin: "auto", padding: "20px" }} onSubmit={props.handleSubmit}>
-                    {error}
-                    <div className="input-group">
-                        <input type="text" name="shop" placeholder="blahblah.myshopify.com" defaultValue={props.shop} onChange={props.handleStoreChanged} />
-                        <input type="submit" value="Connect" />
-                    </div>
+                <p className="subhead">
+                    <label htmlFor="shop">Please enter the “myshopify” domain of your store</label>
+                </p>
+            </header>
+
+            <div className="container__form">
+                {error}
+                <form method="GET" action="login" onSubmit={props.handleSubmit}>
+                    <input type="text" name="shop" placeholder="example.myshopify.com" defaultValue={props.shop} onChange={props.handleStoreChanged} />
+                    <button type="submit">Install</button>
                 </form>
-            </article>
-        </section>
+            </div>
+        </main>
     );
 }

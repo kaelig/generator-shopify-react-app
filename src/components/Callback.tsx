@@ -5,7 +5,7 @@ class CallbackProps {
 }
 
 export function Callback(props: CallbackProps) {
-    const error = props.errorMessage ? <div className="alert error"><dl><dt>Error Alert</dt><dd>{props.errorMessage}</dd></dl></div> : null;
+    const error = props.errorMessage ? <div className="container__form">ERROR: {props.errorMessage}</div> : null;
     return (
         <main className="container" role="main">
             <header>
@@ -15,9 +15,7 @@ export function Callback(props: CallbackProps) {
                 </p>
             </header>
 
-            <div className="container__form">
-                ERROR: {error}
-            </div>
+            {error}
         </main>
     );
 }

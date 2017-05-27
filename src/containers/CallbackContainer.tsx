@@ -1,19 +1,52 @@
 import * as React from "react";
 import { Redirect, RouteComponentProps } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import "whatwg-fetch";
+import { gql, graphql } from "react-apollo";
 
-import { config } from "../config";
 import { parseQueryString } from "../lib/query-string";
 import { Callback } from "../components/Callback";
+import { config } from "../config";
 
 class CallbackContainerState {
     callbackSuccess: boolean;
     errorMessage: string | null;
 }
 
-export class CallbackContainer extends React.Component<RouteComponentProps<undefined>, CallbackContainerState> {
-    constructor(props: RouteComponentProps<undefined>) {
+interface ShopifyAuthCompleteInput {
+    code: string;
+    hmac: string;
+    shop: string;
+    state: string;
+    timestamp: string;
+}
+
+interface ShopifyAuthCompleteResponse {
+    data: {
+        shopifyAuthComplete: {
+            token: string;
+        } | null;
+    };
+    errors?: [{ Error: string; }];
+}
+
+interface CallbackContainerProps extends RouteComponentProps<{}> {
+    data: {
+        loading: boolean;
+        error: object;
+    };
+    mutate: (params: { variables: { token: string, params: ShopifyAuthCompleteInput } }) => Promise<ShopifyAuthCompleteResponse>;
+}
+
+const AuthCompleteMutation = gql`
+    mutation ShopifyAuthComplete($token: String!, $params: ShopifyAuthCompleteInput!) {
+        shopifyAuthComplete(token: $token, params: $params) {
+            token
+        }
+    }`;
+
+@graphql(AuthCompleteMutation)
+export class CallbackContainer extends React.Component<CallbackContainerProps, CallbackContainerState> {
+    constructor(props: CallbackContainerProps) {
         super(props);
         this.state = {
             callbackSuccess: false,
@@ -23,46 +56,52 @@ export class CallbackContainer extends React.Component<RouteComponentProps<undef
 
     // Perform the callback when we mount
     componentDidMount(): void {
-        this.doCallback(parseQueryString(this.props.location.search), sessionStorage.getItem("token"));
+        this.doCallback(parseQueryString(this.props.location.search), localStorage.getItem(config.authTokenKey));
     }
 
     // Perform the callback when we receive new properties
-    componentWillReceiveProps(nextProps: RouteComponentProps<undefined>): void {
+    componentWillReceiveProps(nextProps: CallbackContainerProps): void {
         this.setState({
             callbackSuccess: false,
             errorMessage: null
         });
-        this.doCallback(parseQueryString(nextProps.location.search), sessionStorage.getItem("token"));
+        this.doCallback(parseQueryString(nextProps.location.search), localStorage.getItem(config.authTokenKey));
     }
 
     // This calls our API passing all of the query string parameters plus the token we receive when we started the
     // OAuth process. If it succeeds then set callbackSuccess to true triggering a redirect. If it fails then set
     // the errorMessage in the state so we display an error
     doCallback(querystring: { [name: string]: string }, token: string | null): void {
-        const params = Object.assign({}, querystring, { token: token });
-        const url = `${config.baseApiUrl}/auth/shopify`;
-        fetch(url, { method: "POST", mode: "cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(params) })
-            .then(resp => {
-                if (resp.ok) {
-                    resp.json()
-                        .then(json => {
-                            sessionStorage.setItem("token", json["token"]);
-                            this.setState({
-                                callbackSuccess: true
-                            });
-                        })
-                        .catch(err => {
-                            console.error("Unexpected error calling resp.json()", err);
-                            this.setState({ errorMessage: "OAuth Callback Failed" });
-                        });
-                } else {
-                    console.error("Fetch resp.ok was false");
-                    this.setState({ errorMessage: "OAuth Callback Failed" });
+        if (token === null) {
+            this.setState({ errorMessage: "Missing token" });
+            return;
+        }
+
+        const params: ShopifyAuthCompleteInput = {
+            code: querystring["code"],
+            hmac: querystring["hmac"],
+            shop: querystring["shop"],
+            state: querystring["state"],
+            timestamp: querystring["timestamp"]
+        };
+        this.props.mutate({ variables: { token, params } })
+            .then((resp: ShopifyAuthCompleteResponse) => {
+                if (resp.errors || resp.data.shopifyAuthComplete === null) {
+                    this.setState({
+                        errorMessage: "API Call Failed."
+                    });
+                    return;
                 }
+                localStorage.setItem(config.tokenKey, resp.data.shopifyAuthComplete.token);
+                this.setState({
+                    callbackSuccess: true
+                });
             })
             .catch(err => {
-                console.error("Unexpected error calling fetch()", err);
-                this.setState({ errorMessage: "OAuth Callback Failed" });
+                console.error(err);
+                this.setState({
+                    errorMessage: "API Call Failed."
+                });
             });
     }
 

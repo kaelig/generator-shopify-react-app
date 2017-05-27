@@ -2,7 +2,6 @@
 This starter kit is designed to get you up and running quickly when building a new [Shopify](https://www.shopify.com/?ref=growingecommerce) embedded app using React. While it assumes you have a backend based on [Shopify Serverless Starter Kit](https://github.com/buggy/shopify-serverless-starter) you can build your own backend using any language/framework you prefer.
 
 # Requirements
-
 All if the requirements are in your `package.json` file. You can install them using:
 
 ```sh
@@ -24,7 +23,16 @@ export const config = {
     baseApiUrl: "https://api.example.com/stage",
 
     // Set to true to enable an embedded app or false to disable it
-    enableEmbedded: true
+    enableEmbedded: true,
+
+    // The key used to store our API authorization token in localStorage
+    tokenKey: "token",
+
+    // The key used to store our temporary OAuth token in localStorage
+    authTokenKey: "authToken",
+
+    // The key used to store the shop domain in localStorage
+    shopKey: "shop"
 }
 ```
 
@@ -35,5 +43,7 @@ This project uses the webpack-dev-server. You can start it by running the follow
 npm start
 ```
 
+Once the development server has started go to [https://localhost:5001/login](https://localhost:5001/login to login)
+
 # Copyright
-This project (except for Uptown CSS) is copyright 2017 Rich Buggy & [Growing eCommerce Pty Ltd](http://www.growingecommerce.com). See the LICENCE file for information about using and distributing this project.
+This project copyright 2017 Rich Buggy & [Growing eCommerce Pty Ltd](http://www.growingecommerce.com). See the LICENCE file for information about using and distributing this project.

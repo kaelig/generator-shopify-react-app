@@ -1,19 +1,46 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Helmet } from "react-helmet";
-import "whatwg-fetch";
+import { gql, graphql } from "react-apollo";
 
-import { config } from "../config";
 import { parseQueryString } from "../lib/query-string";
 import { Login } from "../components/Login";
+import {config } from "../config";
 
 class LoginContainerState {
     errorMessage: string | null;
     shop: string;
 }
 
-export class LoginContainer extends React.Component<RouteComponentProps<undefined>, LoginContainerState> {
-    constructor(props: RouteComponentProps<undefined>) {
+interface ShopifyAuthBeginResponse {
+    data: {
+        shopifyAuthBegin: {
+            authUrl: string;
+            token: string;
+        } | null;
+    };
+    errors?: [ { Error: string; }];
+}
+
+interface LoginContainerProps extends RouteComponentProps<{}> {
+    data: {
+        loading: boolean;
+        error: object;
+    };
+    mutate: (params: { variables: { shop: string, callbackUrl: string, perUser: boolean } }) => Promise<ShopifyAuthBeginResponse>;
+}
+
+const AuthBeginMutation = gql`
+    mutation ShopifyAuthBegin($shop: String!, $callbackUrl: String!, $perUser: Boolean!) {
+        shopifyAuthBegin(shop: $shop, callbackUrl: $callbackUrl, perUser: $perUser) {
+            authUrl
+            token
+        }
+    }`;
+
+@graphql(AuthBeginMutation)
+export class LoginContainer extends React.Component<LoginContainerProps, LoginContainerState> {
+    constructor(props: LoginContainerProps) {
         super(props);
         this.state = {
             errorMessage: null,
@@ -27,7 +54,7 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
         this.componentWillReceiveProps(this.props);
     }
 
-    componentWillReceiveProps(nextProps: RouteComponentProps<undefined>): void {
+    componentWillReceiveProps(nextProps: LoginContainerProps): void {
         // Get the shop parameter from the query string
         const params = parseQueryString(nextProps.location.search);
         const shop = params["shop"];
@@ -48,37 +75,36 @@ export class LoginContainer extends React.Component<RouteComponentProps<undefine
 
     // Obtain the OAuth URL and redirect the user to it.
     doLogin(shop: string): void {
-        sessionStorage.setItem("shop", shop);
+        localStorage.setItem(config.shopKey, shop);
         const callbackUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
-        const url = `${config.baseApiUrl}/auth/shopify?shop=${encodeURI(shop)}&callbackUrl=${encodeURI(callbackUrl)}`;
-        console.log(url);
-        fetch(url, { method: "GET", mode: "cors" })
-            .then(resp => {
-                if (resp.ok) {
-                    resp.json()
-                        .then(json => {
-                            sessionStorage.setItem("token", json["token"]);
-                            // If the current window is the 'parent', change the URL by setting location.href
-                            if (window.top === window.self) {
-                                window.location.href = json["authUrl"];
+        this.props.mutate({ variables: { shop, callbackUrl, perUser: false } })
+            .then((resp: ShopifyAuthBeginResponse) => {
+                if (resp.errors || resp.data.shopifyAuthBegin === null) {
+                    this.setState({
+                        errorMessage: "API Call Failed."
+                    });
+                    console.error(resp.errors);
+                    return;
+                }
+                localStorage.setItem(config.authTokenKey, resp.data.shopifyAuthBegin.token);
+                // If the current window is the 'parent', change the URL by setting location.href
+                if (window.top === window.self) {
+                    window.location.href = resp.data.shopifyAuthBegin.authUrl;
 
-                                // If the current window is the 'child', change the parent's URL with postMessage
-                            } else {
-                                let message = JSON.stringify({
-                                    message: "Shopify.API.remoteRedirect",
-                                    data: { location: window.location.origin + "?shop=" + shop }
-                                });
-                                window.parent.postMessage(message, `https://${shop}`);
-                            }
-                        })
-                        .catch(err => console.error("Unexpected error calling resp.json()", err));
+                    // If the current window is the 'child', change the parent's URL with postMessage
                 } else {
-                    this.setState({ errorMessage: "OAuth Begin Failed" });
+                    let message = JSON.stringify({
+                        message: "Shopify.API.remoteRedirect",
+                        data: { location: window.location.origin + "?shop=" + shop }
+                    });
+                    window.parent.postMessage(message, `https://${shop}`);
                 }
             })
             .catch(err => {
-                console.error("Unexpected error calling fetch()", err);
-                this.setState({ errorMessage: "OAuth Begin Failed" });
+                console.error(err);
+                this.setState({
+                    errorMessage: "API Call Failed."
+                });
             });
     }
 

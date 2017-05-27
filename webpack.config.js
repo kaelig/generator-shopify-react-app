@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = (env) => {
     return {
-        entry: ["whatwg-fetch", "./src/index.tsx"],
+        entry: ["./src/index.tsx"],
 
         output: {
             filename: "bundle.js",
@@ -20,8 +20,8 @@ module.exports = (env) => {
 
         module: {
             rules: [
-                { test: /\.js$/, loader: "source-map-loader", enforce: "pre" },
-                { test: /\.tsx$/, loader: "source-map-loader", enforce: "pre" },
+                { test: /\.js$/, loader: "source-map-loader", enforce: "pre", exclude: /node_modules/ },
+                { test: /\.tsx$/, loader: "source-map-loader", enforce: "pre", exclude: /node_modules/ },
                 { test: /\.tsx?$/, loader: "awesome-typescript-loader", exclude: /node_modules/ }
             ]
         },
@@ -38,7 +38,8 @@ module.exports = (env) => {
         devServer: {
             port: 5000,
             https: true,
-            historyApiFallback: true
+            historyApiFallback: true,
+            headers: { 'Access-Control-Allow-Origin': '*' }
         }
     }
 };

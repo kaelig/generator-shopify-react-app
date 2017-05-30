@@ -2,7 +2,7 @@
 This starter kit is designed to get you up and running quickly when building a new [Shopify](https://www.shopify.com/?ref=growingecommerce) embedded app using React. While it assumes you have a backend based on [Shopify Serverless Starter Kit](https://github.com/buggy/shopify-serverless-starter) you can build your own backend using any language/framework you prefer.
 
 # Requirements
-All if the requirements are in your `package.json` file. You can install them using:
+All of the requirements are in your `package.json` file. You can install them using:
 
 ```sh
 npm install

@@ -18,12 +18,14 @@ const networkInterface = createNetworkInterface({
 // Automatically add the token from localStorage as the Authorization header
 networkInterface.use([{
     applyMiddleware(req, next) {
-        if (!req.options.headers) {
-            req.options.headers = {};  // Create the header object if needed.
-        }
-        // get the authentication token from local storage if it exists
         const token = localStorage.getItem(config.tokenKey);
-        req.options.headers.authorization = token ? `Bearer ${token}` : null;
+        if (token) {
+            if (!req.options.headers) {
+                req.options.headers = {};  // Create the header object if needed.
+            }
+            // get the authentication token from local storage if it exists
+            req.options.headers.authorization = `Bearer ${token}`;
+        }
         next();
     }
 }]);

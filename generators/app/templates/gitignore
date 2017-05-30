@@ -1,3 +1,4 @@
 dist/*
+src/config.ts
 node_modules
 !.gitkeep

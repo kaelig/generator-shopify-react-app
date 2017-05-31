@@ -9,14 +9,6 @@ module.exports = class extends Generator {
         this.argument('graphqlapi', { type: String, required: false });
     }
 
-    method1() {
-        this.log('method 1 just ran');
-    }
-
-    method2() {
-        this.log('method 2 just ran');
-    }
-
     prompting() {
         const prompts = [];
         if (!this.options.appname) {
@@ -43,7 +35,6 @@ module.exports = class extends Generator {
         }
         return this.prompt(prompts)
             .then((answers) => {
-                this.log(answers);
                 if (answers.appname) {this.options.appname = answers.appname}
                 if (answers.shopifyapikey) {this.options.shopifyapikey = answers.shopifyapikey}
                 if (answers.graphqlapi) {this.options.graphqlapi = answers.graphqlapi}

@@ -46,6 +46,7 @@ module.exports = class extends Generator {
             "index.html",
             "LICENSE",
             "package.json",
+            "package-lock.json",
             "README.md",
             "tsconfig.json",
             "tslint.json",

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ApolloClient, ApolloProvider, createNetworkInterface } from "react-apollo";
 
 import { CallbackContainer } from "../containers/CallbackContainer";
@@ -42,7 +42,7 @@ export class App extends React.Component<{}, {}> {
     render(): JSX.Element {
         return (
             <ApolloProvider client={client}>
-                <Router>
+                <BrowserRouter>
                     <Switch>
                         <Route path="/login" component={LoginContainer} />
                         <Route path="/logout" component={LogoutContainer} />
@@ -55,7 +55,7 @@ export class App extends React.Component<{}, {}> {
                             </EmbeddedAppContainer>
                         </CheckAuth>
                     </Switch>
-                </Router>
+                </BrowserRouter>
             </ApolloProvider>
         );
     }

@@ -1,18 +1,19 @@
 import * as React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ApolloClient, ApolloProvider, createNetworkInterface } from "react-apollo";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { CallbackContainer } from "../containers/CallbackContainer";
 import { CheckAuth } from "../components/CheckAuth";
+import { CallbackContainer } from "../containers/CallbackContainer";
 import { EmbeddedAppContainer } from "../containers/EmbeddedAppContainer";
 import { HomeContainer } from "../containers/HomeContainer";
 import { LoginContainer } from "../containers/LoginContainer";
 import { LogoutContainer } from "../containers/LogoutContainer";
+
 import { config } from "../config";
 
 // Create a network interface with the config for our GraphQL API
 const networkInterface = createNetworkInterface({
-    uri: config.baseApiUrl
+    uri: config.baseApiUrl,
 });
 
 // Automatically add the token from localStorage as the Authorization header
@@ -27,19 +28,19 @@ networkInterface.use([{
             req.options.headers.authorization = `Bearer ${token}`;
         }
         next();
-    }
+    },
 }]);
 
 // Create an Apollo client
 const client = new ApolloClient({
+    dataIdFromObject: (o: any) => o.id,
     networkInterface,
-    dataIdFromObject: (o: any) => o.id
 });
 
 // This is the routing for our app. /login, /logout and /auth/shopify/callback should all be unauthenticated. The
 // rest of the app should check that the user is authenticated and initialize the embedded app code if enabled
 export class App extends React.Component<{}, {}> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return (
             <ApolloProvider client={client}>
                 <BrowserRouter>

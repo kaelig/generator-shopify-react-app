@@ -1,42 +1,26 @@
-import * as React from "react";
-import { RouteComponentProps } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import { Card, DisplayText, FooterHelp, Page, Subheading } from "@shopify/polaris";
 import { Alert } from "@shopify/polaris/embedded";
+import * as React from "react";
+import { Helmet } from "react-helmet";
+import { RouteComponentProps } from "react-router-dom";
 
-interface HomeContainerState {
+interface IHomeContainerState {
     showModal: boolean;
 }
 
-export class HomeContainer extends React.Component<RouteComponentProps<undefined>, HomeContainerState> {
+export class HomeContainer extends React.Component<RouteComponentProps<undefined>, IHomeContainerState> {
     constructor(props: RouteComponentProps<undefined>) {
         super(props);
         this.state = {
-            showModal: false
+            showModal: false,
         };
         this.handleSave = this.handleSave.bind(this);
         this.hideModal = this.hideModal.bind(this);
     }
 
-    // Called when the Alert is confirmed. By changing showModal to false here when render() is called it outputs
-    // the Alert with open = false
-    hideModal(): void {
-        this.setState({
-            showModal: false
-        });
-    }
-
-    // Called when the save button is clicked. By changing showModal to true here when render() is called it outputs
-    // the Alert with open = true
-    handleSave(): void {
-        this.setState({
-            showModal: true
-        });
-    }
-
     // Renders a demo homepage. The only import thing here is using Helmet to replace the stylesheet with the
     // stylesheet for Polaris.
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return (
             <div className="application">
                 <Helmet>
@@ -46,7 +30,9 @@ export class HomeContainer extends React.Component<RouteComponentProps<undefined
                 <Page title="Example application" primaryAction={{ content: "Save", onAction: this.handleSave }}>
 
                     <Card sectioned>
-                        <DisplayText size="small">This starter kit makes it easy to get started building embedded Shopify apps using React.</DisplayText>
+                        <DisplayText size="small">
+                            This starter kit makes it easy to get started building embedded Shopify apps using React.
+                        </DisplayText>
                     </Card>
 
                     <Card sectioned>
@@ -57,16 +43,36 @@ export class HomeContainer extends React.Component<RouteComponentProps<undefined
                             <li><a href="https://palantir.github.io/tslint/" target="_blank">TSLint</a></li>
                             <li><a href="https://polaris.shopify.com/" target="_blank">Polaris</a></li>
                         </ul>
-                        <p>For more information please see the <a href="https://github.com/buggy/shopify-react-starter">README</a>.</p>
+                        <p>
+                            For more information please see the
+                            <a href="https://github.com/buggy/shopify-react-starter">README</a>.
+                        </p>
                     </Card>
 
                     <Alert open={this.state.showModal} onConfirm={this.hideModal} confirmContent="Ok" >Saved!!</Alert>
 
                     <FooterHelp>
-                        Shopify Serverless Starter Kit &mdash; &copy; 2017 <a href="http://www.growingecommerce.com/" target="_blank">Growing eCommerce Pty Ltd</a>.
-          </FooterHelp>
+                        Shopify Serverless Starter Kit &mdash; &copy; 2017
+                        <a href="http://www.growingecommerce.com/" target="_blank">Growing eCommerce Pty Ltd</a>.
+                    </FooterHelp>
                 </Page>
             </div>
         );
+    }
+
+    // Called when the Alert is confirmed. By changing showModal to false here when render() is called it outputs
+    // the Alert with open = false
+    private hideModal(): void {
+        this.setState({
+            showModal: false,
+        });
+    }
+
+    // Called when the save button is clicked. By changing showModal to true here when render() is called it outputs
+    // the Alert with open = true
+    private handleSave(): void {
+        this.setState({
+            showModal: true,
+        });
     }
 }

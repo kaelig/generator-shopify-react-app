@@ -1,10 +1,10 @@
 import * as React from "react";
 
-class CallbackProps {
+interface ICallbackProps {
     errorMessage: string | null;
 }
 
-export function Callback(props: CallbackProps) {
+export function Callback(props: ICallbackProps) {
     const error = props.errorMessage ? <div className="container__form">ERROR: {props.errorMessage}</div> : null;
     return (
         <main className="container" role="main">

@@ -1,7 +1,8 @@
-import * as React from "react";
 import { EmbeddedApp } from "@shopify/polaris/embedded";
+import * as React from "react";
 import { config } from "../config";
 
+// tslint:disable-next-line:no-namespace
 declare namespace ShopifyApp {
     function init(params: any): any;
 }
@@ -15,7 +16,7 @@ export function EmbeddedAppContainer(props: { children?: any }): JSX.Element {
         // page to load inside the Shopify Admin the way this does. See https://github.com/Shopify/polaris/issues/28
         ShopifyApp.init({
             apiKey: config.shopifyApiKey,
-            shopOrigin: `https://${shop}`
+            shopOrigin: `https://${shop}`,
         });
 
         return (

@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Redirect, RouteComponentProps } from "react-router";
 import { Helmet } from "react-helmet";
+import { Redirect } from "react-router";
 
 import { config } from "../config";
 
-export function LogoutContainer(_props: RouteComponentProps<undefined>) {
-    // Remove the token and shop from our session storage. These are used by the CheckAuth to determine if someone is logged in
+export function LogoutContainer() {
+    // Remove the token and shop from our session storage. These are used by the CheckAuth to determine if someone is
+    // logged in
     localStorage.removeItem(config.authTokenKey);
     localStorage.removeItem(config.tokenKey);
     localStorage.removeItem(config.shopKey);

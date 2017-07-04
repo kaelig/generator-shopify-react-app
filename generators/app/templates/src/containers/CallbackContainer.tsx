@@ -1,5 +1,5 @@
 import * as React from "react";
-import { gql, graphql } from "react-apollo";
+import { gql, graphql, MutationFunc, QueryProps } from "react-apollo";
 import { Helmet } from "react-helmet";
 import { Redirect, RouteComponentProps } from "react-router-dom";
 
@@ -21,26 +21,21 @@ interface IShopifyAuthCompleteInput {
 }
 
 interface IShopifyAuthCompleteResponse {
-    data: {
-        shopifyAuthComplete: {
-            token: string;
-        } | null;
-    };
-    errors?: [{ Error: string; }];
+    shopifyAuthComplete: {
+        token: string;
+    } | null;
 }
 
 interface ICallbackContainerProps extends RouteComponentProps<{}> {
-    data: {
+    data?: QueryProps & {
         loading: boolean;
         error: object;
     };
-    mutate: (
-        params: {
-            variables: {
-                token: string,
-                params: IShopifyAuthCompleteInput,
-            },
-        }) => Promise<IShopifyAuthCompleteResponse>;
+    children?: React.ReactNode;
+    mutate: MutationFunc<QueryProps & IShopifyAuthCompleteResponse>;
+    params: {
+        courseId: string;
+    };
 }
 
 const AuthCompleteMutation = gql`
@@ -50,8 +45,7 @@ const AuthCompleteMutation = gql`
         }
     }`;
 
-@graphql(AuthCompleteMutation)
-export class CallbackContainer extends React.Component<ICallbackContainerProps, ICallbackContainerState> {
+class CallbackContainer extends React.Component<ICallbackContainerProps, ICallbackContainerState> {
     constructor(props: ICallbackContainerProps) {
         super(props);
         this.state = {
@@ -109,8 +103,8 @@ export class CallbackContainer extends React.Component<ICallbackContainerProps, 
             timestamp: querystring.timestamp,
         };
         this.props.mutate({ variables: { token, params } })
-            .then((resp: IShopifyAuthCompleteResponse) => {
-                if (resp.errors || resp.data.shopifyAuthComplete === null) {
+            .then((resp) => {
+                if (resp.data.error || resp.data.shopifyAuthComplete === null) {
                     this.setState({
                         errorMessage: "API Call Failed.",
                     });
@@ -129,3 +123,5 @@ export class CallbackContainer extends React.Component<ICallbackContainerProps, 
             });
     }
 }
+
+export const CallbackContainerWithData = graphql(AuthCompleteMutation)(CallbackContainer) as React.ComponentClass<any>;

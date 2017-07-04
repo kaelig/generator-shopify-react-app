@@ -1,5 +1,5 @@
 import * as React from "react";
-import { gql, graphql } from "react-apollo";
+import { gql, graphql, MutationFunc, QueryProps } from "react-apollo";
 import { Helmet } from "react-helmet";
 import { RouteComponentProps } from "react-router";
 
@@ -13,28 +13,19 @@ interface ILoginContainerState {
 }
 
 interface IShopifyAuthBeginResponse {
-    data: {
-        shopifyAuthBegin: {
-            authUrl: string;
-            token: string;
-        } | null;
-    };
-    errors?: [{ Error: string; }];
+    shopifyAuthBegin: {
+        authUrl: string;
+        token: string;
+    } | null;
 }
 
 interface ILoginContainerProps extends RouteComponentProps<{}> {
-    data: {
-        loading: boolean;
-        error: object;
+    data?: QueryProps;
+    children?: React.ReactNode;
+    mutate: MutationFunc<QueryProps & IShopifyAuthBeginResponse>;
+    params: {
+        courseId: string;
     };
-    mutate: (
-        params: {
-            variables: {
-                callbackUrl: string,
-                shop: string,
-                perUser: boolean,
-            },
-        }) => Promise<IShopifyAuthBeginResponse>;
 }
 
 const AuthBeginMutation = gql`
@@ -45,8 +36,7 @@ const AuthBeginMutation = gql`
         }
     }`;
 
-@graphql(AuthBeginMutation)
-export class LoginContainer extends React.Component<ILoginContainerProps, ILoginContainerState> {
+class LoginContainer extends React.Component<ILoginContainerProps, ILoginContainerState> {
     constructor(props: ILoginContainerProps) {
         super(props);
         this.state = {
@@ -106,12 +96,12 @@ export class LoginContainer extends React.Component<ILoginContainerProps, ILogin
         const callbackUrl =
             `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
         this.props.mutate({ variables: { shop, callbackUrl, perUser: false } })
-            .then((resp: IShopifyAuthBeginResponse) => {
-                if (resp.errors || resp.data.shopifyAuthBegin === null) {
+            .then((resp) => {
+                if (resp.data.error || resp.data.shopifyAuthBegin === null) {
                     this.setState({
                         errorMessage: "API Call Failed.",
                     });
-                    console.error(resp.errors);
+                    console.error(resp.data.error);
                     return;
                 }
                 localStorage.setItem(config.authTokenKey, resp.data.shopifyAuthBegin.token);
@@ -162,3 +152,5 @@ export class LoginContainer extends React.Component<ILoginContainerProps, ILogin
         }
     }
 }
+
+export const LoginContainerWithData = graphql(AuthBeginMutation)(LoginContainer) as React.ComponentClass<any>;

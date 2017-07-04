@@ -3,10 +3,10 @@ import { ApolloClient, ApolloProvider, createNetworkInterface } from "react-apol
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { CheckAuth } from "../components/CheckAuth";
-import { CallbackContainer } from "../containers/CallbackContainer";
+import { CallbackContainerWithData } from "../containers/CallbackContainer";
 import { EmbeddedAppContainer } from "../containers/EmbeddedAppContainer";
 import { HomeContainer } from "../containers/HomeContainer";
-import { LoginContainer } from "../containers/LoginContainer";
+import { LoginContainerWithData } from "../containers/LoginContainer";
 import { LogoutContainer } from "../containers/LogoutContainer";
 
 import { config } from "../config";
@@ -45,9 +45,9 @@ export class App extends React.Component<{}, {}> {
             <ApolloProvider client={client}>
                 <BrowserRouter>
                     <Switch>
-                        <Route path="/login" component={LoginContainer} />
+                        <Route path="/login" component={LoginContainerWithData} />
                         <Route path="/logout" component={LogoutContainer} />
-                        <Route path="/auth/shopify/callback" component={CallbackContainer} />
+                        <Route path="/auth/shopify/callback" component={CallbackContainerWithData} />
                         <CheckAuth>
                             <EmbeddedAppContainer>
                                 <Switch>

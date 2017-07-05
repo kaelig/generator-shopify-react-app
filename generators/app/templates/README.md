@@ -20,7 +20,7 @@ Finally you can generate a new starter app in the current directory by using
 yo shopify-react-app
 ```
 
-If don't want to enter parameters via the prompt you can add them to the command line
+This will prompt you to enter your application name, Shopify API key and GraphQL endpoint. You can also provide parameters on the command line using
 
 ``ssh
 yo shopify-react-app --appname "YOUR APP NAME" --shopifyapikey "YOUR-API-KEY" --graphqlapi "https://YOUR-SITE/graphql"
@@ -34,7 +34,7 @@ npm install
 ```
 
 # Configuration
-You will almost certainly need to customise your `src/config.ts` file.
+Your configuration is stored in the `src/config.ts` file. If you filled in these correctly when running the generator then you can skip this.
 
 ```typescript
 export const config = {
@@ -66,6 +66,35 @@ npm start
 ```
 
 Once the development server has started go to [https://localhost:5001/login](https://localhost:5001/login to login)
+
+# GraphQL API
+
+If you are building your own GraphQL API it needs to respond to two mutations.
+
+The first mutation is called to begin the Shopify OAuth process. The mutation accepts the shop hostname, a callback URL (where the user is redirected after they have approved installation of the app) and whether the authentication is per user. This is enough information to generate the URL the user should be redirected to when starting the OAuth process.
+
+The mutation needs to return an object with an `authUrl` that the user will be redirected to and a `token` that will be stored locally and sent with the mutation called to complete the OAuth process. The `token` provides state between API calls so the OAuth nonce parameter can be verified.
+
+```graphql
+mutation ShopifyAuthBegin($shop: String!, $callbackUrl: String!, $perUser: Boolean!) {
+    shopifyAuthBegin(shop: $shop, callbackUrl: $callbackUrl, perUser: $perUser) {
+        authUrl
+        token
+    }
+}`;
+```
+
+After the user has complete OAuth and approved installation of the application they will be redirected to the `callbackUrl` you provided earlier. This page should call a second mutation to complete the OAuth process. The second mutation also takes two parameters. `token` is the token returned by the `shopifyAuthBegin()` mutation called earlier. `params` is an object containing the `code`, `hmac`, `shop`, `state` and `timestamp` parameters that Shopify added to the callback URL.
+
+This mutation should return an object with another `token` that can be used for future API requests to the GraphQL API. This is different from the token returned by `shopifyAuthBegin()` and should not be the access token from Shopify.
+
+```graphql
+mutation ShopifyAuthComplete($token: String!, $params: ShopifyAuthCompleteInput!) {
+    shopifyAuthComplete(token: $token, params: $params) {
+        token
+    }
+}`;
+```
 
 # Copyright
 This project copyright 2017 Rich Buggy & [Growing eCommerce Pty Ltd](http://www.growingecommerce.com). See the LICENCE file for information about using and distributing this project.

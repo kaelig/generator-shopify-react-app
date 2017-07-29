@@ -5,6 +5,7 @@ import { RouteComponentProps } from "react-router";
 
 import { Login } from "../components/Login";
 import { parseQueryString } from "../lib/query-string";
+import { ShopifyAuthBeginMutation, ShopifyAuthBeginMutationVariables } from "../schema";
 
 import { AUTH_TOKEN_KEY, SHOP_KEY } from "../constants";
 
@@ -15,20 +16,10 @@ interface ILoginContainerState {
     shop: string;
 }
 
-interface IShopifyAuthBeginResponse {
-    shopifyAuthBegin: {
-        authUrl: string;
-        token: string;
-    } | null;
-}
-
 interface ILoginContainerProps extends RouteComponentProps<{}> {
     data?: QueryProps;
     children?: React.ReactNode;
-    mutate: MutationFunc<QueryProps & IShopifyAuthBeginResponse>;
-    params: {
-        courseId: string;
-    };
+    mutate: MutationFunc<ShopifyAuthBeginMutation>;
 }
 
 class LoginContainer extends React.Component<ILoginContainerProps, ILoginContainerState> {
@@ -90,13 +81,13 @@ class LoginContainer extends React.Component<ILoginContainerProps, ILoginContain
         localStorage.setItem(SHOP_KEY, shop);
         const callbackUrl =
             `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
-        this.props.mutate({ variables: { shop, callbackUrl, perUser: false } })
+        const variables: ShopifyAuthBeginMutationVariables = { shop, callbackUrl, perUser: false };
+        this.props.mutate({ variables })
             .then((resp) => {
-                if (resp.data.error || resp.data.shopifyAuthBegin === null) {
+                if (resp.data.shopifyAuthBegin === undefined || resp.data.shopifyAuthBegin === null) {
                     this.setState({
                         errorMessage: "API Call Failed.",
                     });
-                    console.error(resp.data.error);
                     return;
                 }
                 localStorage.setItem(AUTH_TOKEN_KEY, resp.data.shopifyAuthBegin.token);
@@ -148,4 +139,6 @@ class LoginContainer extends React.Component<ILoginContainerProps, ILoginContain
     }
 }
 
-export const LoginContainerWithData = graphql(ShopifyAuthBeginMutationGQL)(LoginContainer) as React.ComponentClass<any>;
+export const LoginContainerWithData =
+    graphql<ShopifyAuthBeginMutation, ILoginContainerProps, ILoginContainerProps>
+        (ShopifyAuthBeginMutationGQL)(LoginContainer);

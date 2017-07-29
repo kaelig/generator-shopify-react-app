@@ -5,6 +5,7 @@ import { Redirect, RouteComponentProps } from "react-router-dom";
 
 import { Callback } from "../components/Callback";
 import { parseQueryString } from "../lib/query-string";
+import { ShopifyAuthCompleteInput, ShopifyAuthCompleteMutation, ShopifyAuthCompleteMutationVariables } from "../schema";
 
 import { AUTH_TOKEN_KEY, TOKEN_KEY } from "../constants";
 
@@ -15,30 +16,10 @@ interface ICallbackContainerState {
     errorMessage: string | null;
 }
 
-interface IShopifyAuthCompleteInput {
-    code: string;
-    hmac: string;
-    shop: string;
-    state: string;
-    timestamp: string;
-}
-
-interface IShopifyAuthCompleteResponse {
-    shopifyAuthComplete: {
-        token: string;
-    } | null;
-}
-
 interface ICallbackContainerProps extends RouteComponentProps<{}> {
-    data?: QueryProps & {
-        loading: boolean;
-        error: object;
-    };
+    data?: QueryProps;
     children?: React.ReactNode;
-    mutate: MutationFunc<QueryProps & IShopifyAuthCompleteResponse>;
-    params: {
-        courseId: string;
-    };
+    mutate: MutationFunc<ShopifyAuthCompleteMutation>;
 }
 
 class CallbackContainer extends React.Component<ICallbackContainerProps, ICallbackContainerState> {
@@ -91,16 +72,17 @@ class CallbackContainer extends React.Component<ICallbackContainerProps, ICallba
             return;
         }
 
-        const params: IShopifyAuthCompleteInput = {
+        const params: ShopifyAuthCompleteInput = {
             code: querystring.code,
             hmac: querystring.hmac,
             shop: querystring.shop,
             state: querystring.state,
             timestamp: querystring.timestamp,
         };
-        this.props.mutate({ variables: { token, params } })
+        const variables: ShopifyAuthCompleteMutationVariables = { token, params };
+        this.props.mutate({ variables })
             .then((resp) => {
-                if (resp.data.error || resp.data.shopifyAuthComplete === null) {
+                if (resp.data.shopifyAuthComplete === undefined || resp.data.shopifyAuthComplete === null) {
                     this.setState({
                         errorMessage: "API Call Failed.",
                     });
@@ -121,4 +103,5 @@ class CallbackContainer extends React.Component<ICallbackContainerProps, ICallba
 }
 
 export const CallbackContainerWithData =
-    graphql(ShopifyAuthCompleteMutationGQL)(CallbackContainer) as React.ComponentClass<any>;
+    graphql<ShopifyAuthCompleteMutation, ICallbackContainerProps, ICallbackContainerProps>
+        (ShopifyAuthCompleteMutationGQL)(CallbackContainer);

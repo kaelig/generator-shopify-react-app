@@ -1,11 +1,14 @@
 import * as React from "react";
-import { gql, graphql, MutationFunc, QueryProps } from "react-apollo";
+import { graphql, MutationFunc, QueryProps } from "react-apollo";
 import { Helmet } from "react-helmet";
 import { RouteComponentProps } from "react-router";
 
 import { Login } from "../components/Login";
-import { AUTH_TOKEN_KEY, SHOP_KEY } from "../constants";
 import { parseQueryString } from "../lib/query-string";
+
+import { AUTH_TOKEN_KEY, SHOP_KEY } from "../constants";
+
+import * as ShopifyAuthBeginMutationGQL from "../graphql/ShopifyAuthBeginMutation.graphql";
 
 interface ILoginContainerState {
     errorMessage: string | null;
@@ -27,14 +30,6 @@ interface ILoginContainerProps extends RouteComponentProps<{}> {
         courseId: string;
     };
 }
-
-const AuthBeginMutation = gql`
-    mutation ShopifyAuthBegin($shop: String!, $callbackUrl: String!, $perUser: Boolean!) {
-        shopifyAuthBegin(shop: $shop, callbackUrl: $callbackUrl, perUser: $perUser) {
-            authUrl
-            token
-        }
-    }`;
 
 class LoginContainer extends React.Component<ILoginContainerProps, ILoginContainerState> {
     constructor(props: ILoginContainerProps) {
@@ -153,4 +148,4 @@ class LoginContainer extends React.Component<ILoginContainerProps, ILoginContain
     }
 }
 
-export const LoginContainerWithData = graphql(AuthBeginMutation)(LoginContainer) as React.ComponentClass<any>;
+export const LoginContainerWithData = graphql(ShopifyAuthBeginMutationGQL)(LoginContainer) as React.ComponentClass<any>;

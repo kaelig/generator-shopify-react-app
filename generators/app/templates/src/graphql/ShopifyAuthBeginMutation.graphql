@@ -1,0 +1,6 @@
+mutation ShopifyAuthBegin($shop: String!, $callbackUrl: String!, $perUser: Boolean!) {
+    shopifyAuthBegin(shop: $shop, callbackUrl: $callbackUrl, perUser: $perUser) {
+        authUrl
+        token
+    }
+}

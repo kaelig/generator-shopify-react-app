@@ -20,6 +20,7 @@ module.exports = (env) => {
 
         module: {
             rules: [
+                { test: /\.(graphql|gql)$/, loader: "graphql-tag/loader", exclude: /node_modules/ },
                 { test: /\.js$/, loader: "source-map-loader", enforce: "pre", exclude: /node_modules/ },
                 { test: /\.tsx$/, loader: "source-map-loader", enforce: "pre", exclude: /node_modules/ },
                 { test: /\.tsx?$/, loader: "awesome-typescript-loader", exclude: /node_modules/ }

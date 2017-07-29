@@ -1,11 +1,14 @@
 import * as React from "react";
-import { gql, graphql, MutationFunc, QueryProps } from "react-apollo";
+import { graphql, MutationFunc, QueryProps } from "react-apollo";
 import { Helmet } from "react-helmet";
 import { Redirect, RouteComponentProps } from "react-router-dom";
 
 import { Callback } from "../components/Callback";
-import { AUTH_TOKEN_KEY, TOKEN_KEY } from "../constants";
 import { parseQueryString } from "../lib/query-string";
+
+import { AUTH_TOKEN_KEY, TOKEN_KEY } from "../constants";
+
+import * as ShopifyAuthCompleteMutationGQL from "../graphql/ShopifyAuthCompleteMutation.graphql";
 
 interface ICallbackContainerState {
     callbackSuccess: boolean;
@@ -37,13 +40,6 @@ interface ICallbackContainerProps extends RouteComponentProps<{}> {
         courseId: string;
     };
 }
-
-const AuthCompleteMutation = gql`
-    mutation ShopifyAuthComplete($token: String!, $params: ShopifyAuthCompleteInput!) {
-        shopifyAuthComplete(token: $token, params: $params) {
-            token
-        }
-    }`;
 
 class CallbackContainer extends React.Component<ICallbackContainerProps, ICallbackContainerState> {
     constructor(props: ICallbackContainerProps) {
@@ -124,4 +120,5 @@ class CallbackContainer extends React.Component<ICallbackContainerProps, ICallba
     }
 }
 
-export const CallbackContainerWithData = graphql(AuthCompleteMutation)(CallbackContainer) as React.ComponentClass<any>;
+export const CallbackContainerWithData =
+    graphql(ShopifyAuthCompleteMutationGQL)(CallbackContainer) as React.ComponentClass<any>;

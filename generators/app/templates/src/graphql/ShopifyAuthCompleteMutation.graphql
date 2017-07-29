@@ -1,0 +1,5 @@
+mutation ShopifyAuthComplete($token: String!, $params: ShopifyAuthCompleteInput!) {
+    shopifyAuthComplete(token: $token, params: $params) {
+        token
+    }
+}

@@ -1,5 +1,6 @@
 import { EmbeddedApp } from "@shopify/polaris/embedded";
 import * as React from "react";
+
 import { ENABLED_EMBEDDED, SHOP_KEY, SHOPIFY_API_KEY } from "../constants";
 
 // This component conditionally includes the EmbeddedApp component based on the enableEmbedded setting in the config

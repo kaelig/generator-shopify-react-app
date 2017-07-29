@@ -5,8 +5,8 @@ module.exports = class extends Generator {
         super(args, opts);
 
         this.argument('appname', { type: String, required: false });
-        this.argument('shopifyapikey', { type: String, required: false });
-        this.argument('graphqlapi', { type: String, required: false });
+        this.argument('shopifyApiKey', { type: String, required: false });
+        this.argument('graphqlApiUrl', { type: String, required: false });
     }
 
     prompting() {
@@ -19,25 +19,25 @@ module.exports = class extends Generator {
                 default: this.appname // Default to current folder name
             });
         }
-        if (!this.options.shopifyapikey) {
+        if (!this.options.shopifyApiKey) {
             prompts.push({
                 type: 'input',
-                name: 'shopifyapikey',
+                name: 'shopifyApiKey',
                 message: 'Your Shopify API Key',
             });
         }
-        if (!this.options.graphqlapi) {
+        if (!this.options.graphqlApiUrl) {
             prompts.push({
                 type: 'input',
-                name: 'graphqlapi',
+                name: 'graphqlApiUrl',
                 message: 'Your GraphQL API endpoint',
             });
         }
         return this.prompt(prompts)
             .then((answers) => {
-                if (answers.appname) {this.options.appname = answers.appname}
-                if (answers.shopifyapikey) {this.options.shopifyapikey = answers.shopifyapikey}
-                if (answers.graphqlapi) {this.options.graphqlapi = answers.graphqlapi}
+                if (answers.appname) { this.options.appname = answers.appname }
+                if (answers.shopifyApiKey) { this.options.shopifyApiKey = answers.shopifyApiKey }
+                if (answers.graphqlApiUrl) { this.options.graphqlApiUrl = answers.graphqlApiUrl }
             });
     }
 
@@ -51,9 +51,8 @@ module.exports = class extends Generator {
             "tsconfig.json",
             "tslint.json",
             "webpack.config.js",
-            "src/config.ts",
+            "src/constants.ts",
             "src/index.tsx",
-            "src/components/App.tsx",
             "src/components/Callback.tsx",
             "src/components/CheckAuth.tsx",
             "src/components/Login.tsx",
@@ -62,7 +61,8 @@ module.exports = class extends Generator {
             "src/containers/HomeContainer.tsx",
             "src/containers/LoginContainer.tsx",
             "src/containers/LogoutContainer.tsx",
-            "src/lib/query-string.ts"
+            "src/lib/query-string.ts",
+            "src/routes/App.tsx",
         ];
         const otherFiles = [
             "dist/.gitkeep",
@@ -70,8 +70,8 @@ module.exports = class extends Generator {
         ];
         const params = {
             "appname": this.options.appname || this.appname,
-            "shopifyapikey": this.options.shopifyapikey || this.shopifyapikey,
-            "graphqlapi": this.options.graphqlapi || this.shopifyapikey
+            "graphqlApiUrl": this.options.graphqlApiUrl || this.graphqlApiUrl,
+            "shopifyApiKey": this.options.shopifyApiKey || this.shopifyApiKey,
         }
 
         for (const f of templateFiles) {

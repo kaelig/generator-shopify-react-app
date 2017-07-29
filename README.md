@@ -23,7 +23,7 @@ yo shopify-react-app
 This will prompt you to enter your application name, Shopify API key and GraphQL endpoint. You can also provide parameters on the command line using
 
 ``ssh
-yo shopify-react-app --appname "YOUR APP NAME" --shopifyapikey "YOUR-API-KEY" --graphqlapi "https://YOUR-SITE/graphql"
+yo shopify-react-app --appname "YOUR APP NAME" --shopifyApiKey "YOUR-API-KEY" --graphqlApiUrl "https://YOUR-SITE/graphql"
 ```
 
 # Dependencies
@@ -34,38 +34,36 @@ npm install
 ```
 
 # Configuration
-Your configuration is stored in the `src/config.ts` file. If you filled in these correctly when running the generator then you can skip this.
+Your configuration is stored in the `src/constants.ts` file. If you filled in these correctly when running the generator then you can skip this.
 
 ```typescript
-export const config = {
-    // Your Shopify API Key
-    shopifyApiKey: "YOUR-API-KEY",
+// The key used to store our temporary OAuth token in localStorage
+export const AUTH_TOKEN_KEY = "authToken";
 
-    // The base URL for our API endpoint
-    baseApiUrl: "https://api.example.com/graphql",
+// The base URL for our API endpoint
+export const BASE_API_URL = "YOUR-GRAPHQL-API-ENDPOINT";
 
-    // Set to true to enable an embedded app or false to disable it
-    enableEmbedded: true,
+// Set to true to enable an embedded app or false to disable it
+export const ENABLED_EMBEDDED = true;
 
-    // The key used to store our API authorization token in localStorage
-    tokenKey: "token",
+// The key used to store the shop domain in localStorage
+export const SHOP_KEY = "shop";
 
-    // The key used to store our temporary OAuth token in localStorage
-    authTokenKey: "authToken",
+// Your Shopify API Key
+export const SHOPIFY_API_KEY = "YOUR-SHOPIFY-API-KEY";
 
-    // The key used to store the shop domain in localStorage
-    shopKey: "shop"
-}
+// The key used to store our API authorization token in localStorage
+export const TOKEN_KEY = "token";
 ```
 
 # Development Server
-This project uses the webpack-dev-server. You can start it by running the following command from the projects root folder
+This project uses the [webpack-dev-server](https://webpack.github.io/docs/webpack-dev-server.html). You can start it by running the following command from the projects root folder
 
 ```sh
 npm start
 ```
 
-Once the development server has started go to [https://localhost:5001/login](https://localhost:5001/login to login)
+Once the development server has started go to [https://localhost:5001/login](https://localhost:5001/login) to login. This URL also accepts the `shop` query string parameter.
 
 # GraphQL API
 

@@ -2,14 +2,14 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { Redirect } from "react-router";
 
-import { config } from "../config";
+import { AUTH_TOKEN_KEY, SHOP_KEY, TOKEN_KEY } from "../constants";
 
 export function LogoutContainer() {
     // Remove the token and shop from our session storage. These are used by the CheckAuth to determine if someone is
     // logged in
-    localStorage.removeItem(config.authTokenKey);
-    localStorage.removeItem(config.tokenKey);
-    localStorage.removeItem(config.shopKey);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(SHOP_KEY);
 
     // Redirect the user to login page
     return (

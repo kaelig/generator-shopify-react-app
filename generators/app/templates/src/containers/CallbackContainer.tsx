@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { Redirect, RouteComponentProps } from "react-router-dom";
 
 import { Callback } from "../components/Callback";
-import { config } from "../config";
+import { AUTH_TOKEN_KEY, TOKEN_KEY } from "../constants";
 import { parseQueryString } from "../lib/query-string";
 
 interface ICallbackContainerState {
@@ -56,7 +56,7 @@ class CallbackContainer extends React.Component<ICallbackContainerProps, ICallba
 
     // Perform the callback when we mount
     public componentDidMount(): void {
-        this.doCallback(parseQueryString(this.props.location.search), localStorage.getItem(config.authTokenKey));
+        this.doCallback(parseQueryString(this.props.location.search), localStorage.getItem(AUTH_TOKEN_KEY));
     }
 
     // Perform the callback when we receive new properties
@@ -65,7 +65,7 @@ class CallbackContainer extends React.Component<ICallbackContainerProps, ICallba
             callbackSuccess: false,
             errorMessage: null,
         });
-        this.doCallback(parseQueryString(nextProps.location.search), localStorage.getItem(config.authTokenKey));
+        this.doCallback(parseQueryString(nextProps.location.search), localStorage.getItem(AUTH_TOKEN_KEY));
     }
 
     // This first time this is called it will render "Please wait..." while the API call is performed. If that
@@ -110,7 +110,7 @@ class CallbackContainer extends React.Component<ICallbackContainerProps, ICallba
                     });
                     return;
                 }
-                localStorage.setItem(config.tokenKey, resp.data.shopifyAuthComplete.token);
+                localStorage.setItem(TOKEN_KEY, resp.data.shopifyAuthComplete.token);
                 this.setState({
                     callbackSuccess: true,
                 });

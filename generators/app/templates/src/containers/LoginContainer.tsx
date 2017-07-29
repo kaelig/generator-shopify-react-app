@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { RouteComponentProps } from "react-router";
 
 import { Login } from "../components/Login";
-import { config } from "../config";
+import { AUTH_TOKEN_KEY, SHOP_KEY } from "../constants";
 import { parseQueryString } from "../lib/query-string";
 
 interface ILoginContainerState {
@@ -92,7 +92,7 @@ class LoginContainer extends React.Component<ILoginContainerProps, ILoginContain
 
     // Obtain the OAuth URL and redirect the user to it.
     private doLogin(shop: string): void {
-        localStorage.setItem(config.shopKey, shop);
+        localStorage.setItem(SHOP_KEY, shop);
         const callbackUrl =
             `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/shopify/callback`;
         this.props.mutate({ variables: { shop, callbackUrl, perUser: false } })
@@ -104,7 +104,7 @@ class LoginContainer extends React.Component<ILoginContainerProps, ILoginContain
                     console.error(resp.data.error);
                     return;
                 }
-                localStorage.setItem(config.authTokenKey, resp.data.shopifyAuthBegin.token);
+                localStorage.setItem(AUTH_TOKEN_KEY, resp.data.shopifyAuthBegin.token);
                 // If the current window is the 'parent', change the URL by setting location.href
                 if (window.top === window.self) {
                     window.location.href = resp.data.shopifyAuthBegin.authUrl;

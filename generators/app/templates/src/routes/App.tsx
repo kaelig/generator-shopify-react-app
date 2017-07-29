@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ApolloClient, ApolloProvider, createNetworkInterface } from "react-apollo";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 
 import { CheckAuth } from "../components/CheckAuth";
 import { CallbackContainerWithData } from "../containers/CallbackContainer";
@@ -9,17 +10,17 @@ import { HomeContainer } from "../containers/HomeContainer";
 import { LoginContainerWithData } from "../containers/LoginContainer";
 import { LogoutContainer } from "../containers/LogoutContainer";
 
-import { config } from "../config";
+import { BASE_API_URL, TOKEN_KEY } from "../constants";
 
 // Create a network interface with the config for our GraphQL API
 const networkInterface = createNetworkInterface({
-    uri: config.baseApiUrl,
+    uri: BASE_API_URL,
 });
 
 // Automatically add the token from localStorage as the Authorization header
 networkInterface.use([{
     applyMiddleware(req, next) {
-        const token = localStorage.getItem(config.tokenKey);
+        const token = localStorage.getItem(TOKEN_KEY);
         if (token) {
             if (!req.options.headers) {
                 req.options.headers = {};  // Create the header object if needed.
@@ -37,12 +38,24 @@ const client = new ApolloClient({
     networkInterface,
 });
 
+// Create the redux store
+const store = createStore(
+  combineReducers({
+    apollo: client.reducer(),
+  }),
+  {}, // initial state
+  compose(
+      applyMiddleware(client.middleware()),
+      // If you are using the devToolsExtension, you can add it here also
+  ),
+);
+
 // This is the routing for our app. /login, /logout and /auth/shopify/callback should all be unauthenticated. The
 // rest of the app should check that the user is authenticated and initialize the embedded app code if enabled
 export class App extends React.Component<{}, {}> {
     public render(): JSX.Element {
         return (
-            <ApolloProvider client={client}>
+            <ApolloProvider client={client} store={store}>
                 <BrowserRouter>
                     <Switch>
                         <Route path="/login" component={LoginContainerWithData} />

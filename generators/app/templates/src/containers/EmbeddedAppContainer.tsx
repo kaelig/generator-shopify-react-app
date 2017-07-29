@@ -1,14 +1,14 @@
 import { EmbeddedApp } from "@shopify/polaris/embedded";
 import * as React from "react";
-import { config } from "../config";
+import { ENABLED_EMBEDDED, SHOP_KEY, SHOPIFY_API_KEY } from "../constants";
 
 // This component conditionally includes the EmbeddedApp component based on the enableEmbedded setting in the config
 export function EmbeddedAppContainer(props: { children?: any }): JSX.Element {
-    if (config.enableEmbedded) {
-        const shop = localStorage.getItem(config.shopKey);
+    if (ENABLED_EMBEDDED) {
+        const shop = localStorage.getItem(SHOP_KEY);
 
         return (
-            <EmbeddedApp apiKey={config.shopifyApiKey} shopOrigin={`https://${shop}`} forceRedirect={true}>
+            <EmbeddedApp apiKey={SHOPIFY_API_KEY} shopOrigin={`https://${shop}`} forceRedirect={true}>
                 {props.children}
             </EmbeddedApp>
         );

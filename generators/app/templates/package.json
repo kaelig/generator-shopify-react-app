@@ -7,7 +7,9 @@
     "build": "webpack ./webpack.config.js --env.dev",
     "build:prod": "webpack --end.prod -p",
     "clean": "rm -rf dist/*",
-    "prestart": "npm run clean",
+    "lint": "tslint -p tsconfig.json --force --type-check",
+    "prebuild": "npm run clean && npm run lint",
+    "prestart": "npm run clean && npm run lint",
     "refresh:schema": "apollo-codegen introspect-schema https://3x71r4jn1h.execute-api.us-east-1.amazonaws.com/dev/graphql > schema.json && apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/schema.ts",
     "start": "webpack-dev-server ./webpack.config.js --env.dev --content-base ./",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -39,7 +41,7 @@
     "apollo-codegen": "^0.16.1",
     "awesome-typescript-loader": "^3.2.1",
     "source-map-loader": "^0.2.1",
-    "tslint": "^5.4.3",
+    "tslint": "^5.5.0",
     "typescript": "^2.4.2",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.1"

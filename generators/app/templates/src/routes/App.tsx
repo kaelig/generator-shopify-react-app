@@ -10,7 +10,7 @@ import { HomeContainer } from "../containers/HomeContainer";
 import { LoginContainerWithData } from "../containers/LoginContainer";
 import { LogoutContainer } from "../containers/LogoutContainer";
 
-import { BASE_API_URL, TOKEN_KEY } from "../constants";
+import { BASE_API_URL, SHOP_KEY, TOKEN_KEY } from "../constants";
 
 // Create a network interface with the config for our GraphQL API
 const networkInterface = createNetworkInterface({
@@ -54,6 +54,9 @@ const store = createStore(
 // rest of the app should check that the user is authenticated and initialize the embedded app code if enabled
 export class App extends React.Component<{}, {}> {
     public render(): JSX.Element {
+        const shop = localStorage.getItem(SHOP_KEY);
+        const token = localStorage.getItem(TOKEN_KEY);
+
         return (
             <ApolloProvider client={client} store={store}>
                 <BrowserRouter>
@@ -61,7 +64,7 @@ export class App extends React.Component<{}, {}> {
                         <Route path="/login" component={LoginContainerWithData} />
                         <Route path="/logout" component={LogoutContainer} />
                         <Route path="/auth/shopify/callback" component={CallbackContainerWithData} />
-                        <CheckAuth>
+                        <CheckAuth shop={shop} token={token}>
                             <EmbeddedAppContainer>
                                 <Switch>
                                     <Route path="/" component={HomeContainer} />

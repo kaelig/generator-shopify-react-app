@@ -8,11 +8,11 @@
     "build:prod": "webpack --end.prod -p",
     "clean": "rm -rf dist/*",
     "lint": "tslint -p tsconfig.json --force --type-check",
-    "prebuild": "npm run clean && npm run lint",
-    "prestart": "npm run clean && npm run lint",
-    "refresh:schema": "apollo-codegen introspect-schema https://3x71r4jn1h.execute-api.us-east-1.amazonaws.com/dev/graphql > schema.json && apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/schema.ts",
+    "prebuild": "npm run clean && npm run lint && npm test",
+    "prestart": "npm run prebuild",
+    "refresh:schema": "apollo-codegen introspect-schema YOUR-GRAPHQL-API-ENDPOINT > schema.json && apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/schema.ts",
     "start": "webpack-dev-server ./webpack.config.js --env.dev --content-base ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -34,16 +34,45 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
+    "@types/enzyme": "^2.8.4",
+    "@types/jest": "^20.0.5",
     "@types/react": "^15.6.0",
     "@types/react-dom": "^15.5.1",
     "@types/react-helmet": "^5.0.3",
     "@types/react-router-dom": "^4.0.7",
+    "@types/react-test-renderer": "^15.5.2",
     "apollo-codegen": "^0.16.1",
     "awesome-typescript-loader": "^3.2.2",
+    "enzyme": "^2.9.1",
+    "jest": "^20.0.4",
+    "react-test-renderer": "^15.6.1",
     "source-map-loader": "^0.2.1",
+    "ts-jest": "^20.0.7",
     "tslint": "^5.5.0",
     "typescript": "^2.4.2",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.{js,jsx,ts,tsx}",
+      "!**/*.d.ts",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
   }
 }

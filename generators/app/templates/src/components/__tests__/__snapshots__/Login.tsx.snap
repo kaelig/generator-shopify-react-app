@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly with error 1`] = `
+<main
+  className="container"
+  role="main"
+>
+  <header>
+    <h1>
+      Shopify App — Installation
+    </h1>
+    <p
+      className="subhead"
+    >
+      <label
+        htmlFor="shop"
+      >
+        Please enter the “myshopify” domain of your store
+      </label>
+    </p>
+  </header>
+  <div
+    className="container__form"
+  >
+    <div
+      className="alert error"
+    >
+      <dl>
+        <dt>
+          Error Alert
+        </dt>
+        <dd>
+          Store domain name is wrong
+        </dd>
+      </dl>
+    </div>
+    <form
+      action="login"
+      method="GET"
+      onSubmit={[Function]}
+    >
+      <input
+        defaultValue="example.myshopify.comx"
+        name="shop"
+        onChange={[Function]}
+        placeholder="example.myshopify.com"
+        type="text"
+      />
+      <button
+        type="submit"
+      >
+        Install
+      </button>
+    </form>
+  </div>
+</main>
+`;
+
+exports[`Renders correctly with no error or shop 1`] = `
+<main
+  className="container"
+  role="main"
+>
+  <header>
+    <h1>
+      Shopify App — Installation
+    </h1>
+    <p
+      className="subhead"
+    >
+      <label
+        htmlFor="shop"
+      >
+        Please enter the “myshopify” domain of your store
+      </label>
+    </p>
+  </header>
+  <div
+    className="container__form"
+  >
+    <form
+      action="login"
+      method="GET"
+      onSubmit={[Function]}
+    >
+      <input
+        defaultValue=""
+        name="shop"
+        onChange={[Function]}
+        placeholder="example.myshopify.com"
+        type="text"
+      />
+      <button
+        type="submit"
+      >
+        Install
+      </button>
+    </form>
+  </div>
+</main>
+`;
+
+exports[`Renders correctly with shop 1`] = `
+<main
+  className="container"
+  role="main"
+>
+  <header>
+    <h1>
+      Shopify App — Installation
+    </h1>
+    <p
+      className="subhead"
+    >
+      <label
+        htmlFor="shop"
+      >
+        Please enter the “myshopify” domain of your store
+      </label>
+    </p>
+  </header>
+  <div
+    className="container__form"
+  >
+    <form
+      action="login"
+      method="GET"
+      onSubmit={[Function]}
+    >
+      <input
+        defaultValue="example.myshopify.com"
+        name="shop"
+        onChange={[Function]}
+        placeholder="example.myshopify.com"
+        type="text"
+      />
+      <button
+        type="submit"
+      >
+        Install
+      </button>
+    </form>
+  </div>
+</main>
+`;

@@ -1,4 +1,5 @@
 dist/*
 src/constants.ts
+src/coverage/*
 node_modules
 !.gitkeep

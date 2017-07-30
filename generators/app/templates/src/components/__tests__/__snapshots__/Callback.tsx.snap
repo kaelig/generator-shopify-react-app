@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly with error 1`] = `
+<main
+  className="container"
+  role="main"
+>
+  <header>
+    <h1>
+      Shopify App — Installation
+    </h1>
+    <p
+      className="subhead"
+    >
+      <label
+        htmlFor="shop"
+      >
+        Redirecting, please wait...
+      </label>
+    </p>
+  </header>
+  <div
+    className="container__form"
+  >
+    ERROR: 
+    Something went wrong
+  </div>
+</main>
+`;
+
+exports[`Renders correctly with no error 1`] = `
+<main
+  className="container"
+  role="main"
+>
+  <header>
+    <h1>
+      Shopify App — Installation
+    </h1>
+    <p
+      className="subhead"
+    >
+      <label
+        htmlFor="shop"
+      >
+        Redirecting, please wait...
+      </label>
+    </p>
+  </header>
+</main>
+`;

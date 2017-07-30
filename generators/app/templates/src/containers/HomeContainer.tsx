@@ -25,7 +25,7 @@ export class HomeContainer extends React.Component<RouteComponentProps<undefined
             <div className="application">
                 <Helmet>
                     <title>Shopify App &mdash; Home</title>
-                    <link rel="stylesheet" href="https://sdks.shopifycdn.com/polaris/1.0.0/polaris.min.css" />
+                    <link rel="stylesheet" href="https://sdks.shopifycdn.com/polaris/1.2.1/polaris.min.css" />
                 </Helmet>
                 <Page title="Example application" primaryAction={{ content: "Save", onAction: this.handleSave }}>
 

@@ -4,13 +4,13 @@
   "description": "Shopify React Starter Kit",
   "main": "index.js",
   "scripts": {
-    "build": "webpack ./webpack.config.js --env.dev",
+    "build": "webpack ./webpack.config.js --define process.env.NODE_ENV='production'",
     "clean": "rm -rf dist/*",
     "lint": "tslint -p tsconfig.json --type-check",
     "prebuild": "npm run clean && npm run lint",
     "prestart": "npm test",
     "pretest": "npm run build",
-    "start": "webpack-dev-server ./webpack.config.js --env.dev --content-base ./",
+    "start": "webpack-dev-server ./webpack.config.js -d --content-base ./",
     "test": "jest --coverage",
     "update:schema": "apollo-codegen introspect-schema <%= graphqlApiUrl %> > schema.json && apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/schema.ts"
   },

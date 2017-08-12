@@ -11,7 +11,7 @@ module.exports = (env) => {
         },
 
         // Enable sourcemaps for debugging webpack's output.
-        devtool: env.prod ? "source-map" : "eval",
+        devtool: (process.env.NODE_ENV === "production") ? "source-map" : "inline",
 
         resolve: {
             // Add '.ts' and '.tsx' as resolvable extensions.

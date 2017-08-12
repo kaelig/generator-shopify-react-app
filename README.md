@@ -71,7 +71,7 @@ You may notice that the type definitions for the GraphQL API endpoint are in a f
 After doing that you can run the following command to rebuild `src/schema.ts` based off your actual GraphQL API endpoint and the GraphQL queries inside `src/graphql`.
 
 ```sh
-npm run refresh:schema
+npm run update:schema
 ```
 
 # GraphQL API

@@ -34,7 +34,7 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
-    "@types/enzyme": "^2.8.4",
+    "@types/enzyme": "^2.8.5",
     "@types/jest": "^20.0.5",
     "@types/react": "^15.6.0",
     "@types/react-dom": "^15.5.1",

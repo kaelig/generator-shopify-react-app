@@ -12,7 +12,7 @@
     "pretest": "npm run build",
     "start": "webpack-dev-server ./webpack.config.js --env.dev --content-base ./",
     "test": "jest --coverage",
-    "update:schema": "apollo-codegen introspect-schema YOUR-GRAPHQL-API-ENDPOINT > schema.json && apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/schema.ts"
+    "update:schema": "apollo-codegen introspect-schema <%= graphqlApiUrl %> > schema.json && apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/schema.ts"
   },
   "repository": {
     "type": "git",

@@ -8,7 +8,7 @@ import { CallbackContainerWithData } from "../containers/CallbackContainer";
 import { EmbeddedAppContainer } from "../containers/EmbeddedAppContainer";
 import { HomeContainer } from "../containers/HomeContainer";
 import { LoginContainerWithData } from "../containers/LoginContainer";
-import { LogoutContainer } from "../containers/LogoutContainer";
+import { LogoutContainerWithData } from "../containers/LogoutContainer";
 
 import { BASE_API_URL, SHOP_KEY, TOKEN_KEY } from "../constants";
 
@@ -62,7 +62,7 @@ export class App extends React.Component<{}, {}> {
                 <BrowserRouter>
                     <Switch>
                         <Route path="/login" component={LoginContainerWithData} />
-                        <Route path="/logout" component={LogoutContainer} />
+                        <Route path="/logout" component={LogoutContainerWithData} />
                         <Route path="/auth/shopify/callback" component={CallbackContainerWithData} />
                         <CheckAuth shop={shop} token={token}>
                             <EmbeddedAppContainer>
